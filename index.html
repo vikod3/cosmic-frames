@@ -160,9 +160,7 @@
   }
   .up-screen .bg {
     position: absolute; left: 0; top: 0; width: 370px; height: 790px; z-index: 0;
-    background-repeat: no-repeat;
-    background-size: 387px auto;
-    background-position: -11px -115px;
+    object-fit: cover;
   }
   .up-screen .bg-fade {
     position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 1;
@@ -204,7 +202,7 @@
 
   .up-screen .card.monthly {
     left: 0; width: 144px;
-    background-image: url('assets/images/monthly_card_bg.png');
+    background-image: url('https://polo-pecan-73837341.figma.site/_assets/v11/ef4533e6536f2495088e56e0f98036b5ff15446d.png');
     background-size: cover;
     background-position: center;
     border: 1px solid rgba(255,255,255,0.11);
@@ -442,12 +440,12 @@
                └──────────────────────────────────────────────┘ -->
           <div class="tp-screen">
             <div class="tp-scale">
-              <img class="hero" alt="" src="assets/images/screen%201%20bg.png">
+              <video class="hero" autoplay loop muted playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260710_114906_ad7cee37-9e56-434f-99bc-92d5bdc4f9fe.mp4"></video>
               <div class="hero-fade"></div>
 
               <!-- logo -->
               <div class="logo">
-                <img src="assets/images/icon.png" alt="logo">
+                <img src="https://polo-pecan-73837341.figma.site/_assets/v11/b1ddc82509144261f1999a0c4d92be5ce6689c0f.png" alt="logo">
               </div>
 
               <!-- headline -->
@@ -509,7 +507,7 @@
                │  SCREEN 2 CONTENT — Unlock Pro                 │
                └──────────────────────────────────────────────┘ -->
           <div class="up-screen">
-            <div class="bg" style="background-image:url('assets/images/screen%202%20bg.png');"></div>
+            <video class="bg" autoplay loop muted playsinline src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260710_115050_a1ba47d0-aedf-413c-9dea-14509599d3dd.mp4"></video>
             <div class="bg-fade"></div>
 
             <div class="up-content">
@@ -620,11 +618,18 @@
     }
 
     var waits = [];
-    var hero = document.querySelector('.tp-screen .hero');           // Screen 1 bg (<img>)
-    if (hero) waits.push(whenLoaded(hero));
-    var bg2 = new Image();                                           // Screen 2 bg (CSS bg → preload)
-    bg2.src = 'assets/images/screen%202%20bg.png';
-    waits.push(whenLoaded(bg2));
+    var hero = document.querySelector('.tp-screen .hero');           // Screen 1 bg (video)
+    if (hero) waits.push(new Promise(function(res) {
+      if (hero.readyState >= 2) { res(); return; }
+      hero.addEventListener('loadeddata', res, { once: true });
+      hero.addEventListener('error', res, { once: true });
+    }));
+    var bg2 = document.querySelector('.up-screen .bg');              // Screen 2 bg (video)
+    if (bg2) waits.push(new Promise(function(res) {
+      if (bg2.readyState >= 2) { res(); return; }
+      bg2.addEventListener('loadeddata', res, { once: true });
+      bg2.addEventListener('error', res, { once: true });
+    }));
     if (document.fonts && document.fonts.ready) waits.push(document.fonts.ready);
 
     Promise.all(waits).then(release);
